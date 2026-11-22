@@ -5,7 +5,8 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { Api, type Phase, type Photo, type Space } from '../../core/api';
-import { ago, DISPOSITION_TONE } from '../../shared/format';
+import { ago, DISPOSITION_TONE, severityTone } from '../../shared/format';
+import { StatusPill } from '../../shared/for-apps/status';
 
 interface SeenItem {
   name: string;
@@ -27,7 +28,7 @@ interface Analysis {
 @Component({
   selector: 'app-photo-dialog',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, MatButtonModule, MatDialogModule, MatFormFieldModule, MatSelectModule],
+  imports: [StatusPill, FormsModule, MatButtonModule, MatDialogModule, MatFormFieldModule, MatSelectModule],
   templateUrl: './photo-dialog.html',
   styleUrl: './photo-dialog.scss',
 })
@@ -39,6 +40,7 @@ export class PhotoDialog {
   readonly evaluations = resource({ loader: () => this.api.evaluations(this.data.photo.id) });
   readonly tone = DISPOSITION_TONE;
   readonly ago = ago;
+  readonly severityTone = severityTone;
   changed = false;
 
   get analysis(): Analysis | null {

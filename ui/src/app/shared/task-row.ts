@@ -4,12 +4,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import type { Task } from '../core/api';
+import { StatusPill } from './for-apps/status';
 
 /** One checklist step: check it off, see its first step and supplies, skip or delete it. */
 @Component({
   selector: 'app-task-row',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatCheckboxModule, MatIconModule, MatButtonModule, MatMenuModule],
+  imports: [StatusPill, MatCheckboxModule, MatIconModule, MatButtonModule, MatMenuModule],
   template: `
     <mat-checkbox
       [checked]="t().status === 'done'"
@@ -20,13 +21,13 @@ import type { Task } from '../core/api';
     <div class="body" [class.done]="t().status === 'done'" [class.skipped]="t().status === 'skipped'">
       <div class="title">
         {{ t().title }}
-        <span class="app-pill">{{ t().phase }}</span>
+        <app-pill>{{ t().phase }}</app-pill>
         <span class="meta">{{ t().est_minutes }} min</span>
         @if (t().priority === 1) {
-          <span class="app-pill" data-tone="warn">first</span>
+          <app-pill tone="warn">first</app-pill>
         }
         @if (t().gameplan_task_id) {
-          <span class="app-pill" data-tone="ok">Game Plan {{ t().gameplan_date }}</span>
+          <app-pill tone="ok">Game Plan {{ t().gameplan_date }}</app-pill>
         }
         @if (blocked() && t().status !== 'done') {
           <span class="meta">waits on an earlier step</span>

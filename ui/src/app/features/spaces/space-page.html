@@ -54,12 +54,11 @@
       }
     } @else if (plan.value(); as p) {
       @if (writing()) {
-        <div class="app-empty">
-          Claude is writing the plan…
+        <app-empty-state message="Claude is writing the plan…" icon="edit_note">
           @if (!cfg()?.claude?.apiWorker) {
-            <div>No API key is set, so the job is waiting for a Claude Code thread (Claude jobs tab).</div>
+            <p>No API key is set, so the job is waiting for a Claude Code thread (Claude jobs tab).</p>
           }
-        </div>
+        </app-empty-state>
       } @else {
         @if (p.summary) {
           <p class="summary">{{ p.summary }}</p>
@@ -92,7 +91,7 @@
         @for (t of p.tasks; track t.id) {
           <app-task-row [t]="t" [blocked]="blocked(t)" (status)="setStatus(t, $event)" (remove)="removeTask(t)" />
         } @empty {
-          <div class="app-empty">No steps yet.</div>
+          <app-empty-state message="No steps yet." />
         }
         @if (!api.demo) {
           <form class="add" (ngSubmit)="addStep()">
@@ -146,7 +145,7 @@
     }
   </section>
 } @else if (spaces.isLoading()) {
-  <div class="app-empty">Loading…</div>
+  <app-empty-state message="Loading…" />
 } @else {
-  <div class="app-empty">That space doesn't exist. <a routerLink="/spaces">All spaces</a></div>
+  <app-empty-state message="That space doesn't exist."><a mat-button routerLink="/spaces">All spaces</a></app-empty-state>
 }

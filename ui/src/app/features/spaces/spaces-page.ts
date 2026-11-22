@@ -7,11 +7,12 @@ import { MatSelectModule } from '@angular/material/select';
 import { RouterLink } from '@angular/router';
 import { Api } from '../../core/api';
 import { ProgressLine } from '../../shared/progress-line';
+import { StatusPill, EmptyState } from '../../shared/for-apps/status';
 
 @Component({
   selector: 'app-spaces-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatSelectModule, RouterLink, ProgressLine],
+  imports: [StatusPill, EmptyState, FormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatSelectModule, RouterLink, ProgressLine],
   template: `
     <form class="add" (ngSubmit)="add()">
       <mat-form-field subscriptSizing="dynamic" class="grow">
@@ -42,7 +43,7 @@ import { ProgressLine } from '../../shared/progress-line';
       <a class="space" [routerLink]="['/spaces', s.id]" [style.margin-left.px]="depth(s.path) * 24">
         <div class="head">
           <span class="name">{{ s.name }}</span>
-          <span class="app-pill">{{ s.kind }}</span>
+          <app-pill>{{ s.kind }}</app-pill>
         </div>
         @if (s.goal) {
           <div class="goal">{{ s.goal }}</div>
@@ -50,7 +51,7 @@ import { ProgressLine } from '../../shared/progress-line';
         <app-progress-line [p]="s.progress" />
       </a>
     } @empty {
-      <div class="app-empty">No spaces yet. Add the first room above.</div>
+      <app-empty-state message="No spaces yet. Add the first room above." />
     }
   `,
   styles: `

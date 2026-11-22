@@ -47,7 +47,7 @@
             @for (i of a.items; track $index) {
               <li>
                 <b>{{ i.name }}</b> ×{{ i.quantity }} · {{ i.spot }}
-                <span class="app-pill" [attr.data-tone]="tone[i.suggested_disposition]">{{ i.suggested_disposition }}</span>
+                <app-pill [tone]="tone[i.suggested_disposition]">{{ i.suggested_disposition }}</app-pill>
                 <div class="meta">{{ i.condition }} — {{ i.reason }}</div>
               </li>
             }
@@ -58,7 +58,7 @@
           <ul>
             @for (o of a.observations; track $index) {
               <li>
-                <span class="app-pill" [attr.data-tone]="o.severity === 'high' ? 'bad' : o.severity === 'medium' ? 'warn' : null">{{ o.severity }}</span>
+                <app-pill [tone]="severityTone(o.severity)">{{ o.severity }}</app-pill>
                 {{ o.issue }} <span class="meta">→ {{ o.suggestion }}</span>
               </li>
             }

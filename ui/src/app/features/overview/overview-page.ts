@@ -5,11 +5,12 @@ import { Api, type Task } from '../../core/api';
 import { ago, minutes, percent } from '../../shared/format';
 import { ProgressLine } from '../../shared/progress-line';
 import { TaskRow } from '../../shared/task-row';
+import { StatTile, EmptyState } from '../../shared/for-apps/status';
 
 @Component({
   selector: 'app-overview-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, MatButtonModule, ProgressLine, TaskRow],
+  imports: [StatTile, EmptyState, RouterLink, MatButtonModule, ProgressLine, TaskRow],
   templateUrl: './overview-page.html',
   styleUrl: './overview-page.scss',
 })

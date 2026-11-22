@@ -1,13 +1,9 @@
 @if (data.error()) {
-  <div class="app-empty">Couldn't load the overview. Is the API running?</div>
+  <app-empty-state message="Couldn't load the overview. Is the API running?" />
 } @else if (data.value(); as o) {
   <div class="app-tiles">
     @for (t of tiles(); track t.label) {
-      <div class="app-tile">
-        <span class="label">{{ t.label }}</span>
-        <span class="value">{{ t.value }}</span>
-        <span class="hint">{{ t.hint }}</span>
-      </div>
+      <app-stat-tile [label]="t.label" [value]="t.value" [hint]="t.hint" />
     }
   </div>
 
@@ -18,10 +14,9 @@
         <div class="where">{{ spaceName(t.space_id) }}</div>
         <app-task-row [t]="t" (status)="setStatus(t, $event)" (remove)="remove(t)" />
       } @empty {
-        <div class="app-empty">
-          Nothing ready to do. Upload photos of a space, then ask Claude for a plan on its page.
-          <div><a mat-stroked-button routerLink="/photos">Upload photos</a></div>
-        </div>
+        <app-empty-state message="Nothing ready to do. Upload photos of a space, then ask Claude for a plan on its page." icon="task_alt">
+          <a mat-stroked-button routerLink="/photos">Upload photos</a>
+        </app-empty-state>
       }
     </section>
 
@@ -36,7 +31,7 @@
           <app-progress-line [p]="s.progress" />
         </a>
       } @empty {
-        <div class="app-empty">No spaces yet. <a routerLink="/spaces">Add one</a> or upload photos with a space name.</div>
+        <app-empty-state message="No spaces yet. Add one, or upload photos with a space name." icon="home"><a mat-button routerLink="/spaces">Add a space</a></app-empty-state>
       }
 
       @if (o.recent_checkins.length) {
@@ -56,5 +51,5 @@
     </section>
   </div>
 } @else {
-  <div class="app-empty">Loading…</div>
+  <app-empty-state message="Loading…" />
 }

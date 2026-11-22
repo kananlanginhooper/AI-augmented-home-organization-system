@@ -1,4 +1,5 @@
 import { formatDistanceToNowStrict, parseISO } from 'date-fns';
+import type { Tone } from './for-apps/status';
 
 /** API datetimes are naive UTC ("2026-11-22T18:04:00"); treat them as UTC. */
 export function ago(iso: string | null | undefined): string {
@@ -22,13 +23,10 @@ export function today(): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
-export const DISPOSITION_TONE: Record<string, string | null> = {
-  keep: 'ok',
-  donate: 'warn',
-  sell: 'warn',
-  trash: 'bad',
-  relocate: null,
-  undecided: null,
-};
+export const DISPOSITION_TONE: Record<string, Tone> = { keep: 'ok', donate: 'warn', sell: 'warn', trash: 'bad', relocate: '', undecided: '' };
 
-export const JOB_TONE: Record<string, string | null> = { done: 'ok', running: 'warn', pending: null, failed: 'bad' };
+export const JOB_TONE: Record<string, Tone> = { done: 'ok', running: 'warn', pending: '', failed: 'bad' };
+
+export function severityTone(s: string): Tone {
+  return s === 'high' ? 'bad' : s === 'medium' ? 'warn' : '';
+}

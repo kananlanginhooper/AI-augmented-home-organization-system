@@ -9,7 +9,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { MatIconRegistry } from '@angular/material/icon';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { ConfigService, loadedConfig } from './core/config.service';
-import { provideRouteReporter } from './core/route-reporter';
+import { provideRouteReporter } from './shared/for-apps/route-reporter';
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -23,7 +23,7 @@ export const appConfig: ApplicationConfig = {
       inject(MatIconRegistry).setDefaultFontSetClass('material-symbols-outlined');
     }),
     provideAppInitializer(() => inject(ConfigService).load()),
-    // Copied unchanged from the wrapper repo (ui/src/for-apps/route-reporter.ts, 16ae37d).
+    // Copied unchanged from the wrapper repo (ui/src/for-apps/route-reporter.ts, 71f4670).
     provideRouteReporter(() => loadedConfig.value?.frameParents ?? []),
   ],
 };

@@ -9,12 +9,14 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTableModule } from '@angular/material/table';
 import { Api, DISPOSITIONS, type Item, type ItemPatch } from '../../core/api';
 import { DISPOSITION_TONE } from '../../shared/format';
+import { StatusPill } from '../../shared/for-apps/status';
+import { StackTable } from '../../shared/for-apps/stack-table';
 
 /** What is where: search ("where's the drill?"), review Claude's suggestions, decide what stays. */
 @Component({
   selector: 'app-inventory-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
+  imports: [StatusPill, StackTable, 
     FormsModule,
     MatButtonModule,
     MatFormFieldModule,

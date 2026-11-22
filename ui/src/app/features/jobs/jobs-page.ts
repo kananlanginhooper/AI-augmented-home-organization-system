@@ -4,12 +4,14 @@ import { MatTableModule } from '@angular/material/table';
 import { Api, type Job } from '../../core/api';
 import { ConfigService } from '../../core/config.service';
 import { ago, JOB_TONE } from '../../shared/format';
+import { StatusPill } from '../../shared/for-apps/status';
+import { StackTable } from '../../shared/for-apps/stack-table';
 
 /** The Claude work queue: what's waiting, who ran what, and what failed. */
 @Component({
   selector: 'app-jobs-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatButtonModule, MatTableModule],
+  imports: [StatusPill, StackTable, MatButtonModule, MatTableModule],
   template: `
     <div class="how">
       @if (cfg()?.claude?.apiWorker) {
@@ -21,7 +23,7 @@ import { ago, JOB_TONE } from '../../shared/format';
       }
       <button mat-button (click)="jobs.reload()">Refresh</button>
     </div>
-    <table mat-table [dataSource]="jobs.value() ?? []">
+    <table mat-table appStackTable [dataSource]="jobs.value() ?? []">
       <ng-container matColumnDef="id"><th mat-header-cell *matHeaderCellDef>#</th><td mat-cell *matCellDef="let j">{{ j.id }}</td></ng-container>
       <ng-container matColumnDef="kind">
         <th mat-header-cell *matHeaderCellDef>Job</th>
@@ -30,7 +32,7 @@ import { ago, JOB_TONE } from '../../shared/format';
       <ng-container matColumnDef="status">
         <th mat-header-cell *matHeaderCellDef>Status</th>
         <td mat-cell *matCellDef="let j">
-          <span class="app-pill" [attr.data-tone]="tone[j.status]">{{ j.status }}</span>
+          <app-pill [tone]="tone[j.status]">{{ j.status }}</app-pill>
           @if (j.worker) { <span class="meta">{{ j.worker }}</span> }
           @if (j.error) { <div class="error">{{ j.error }}</div> }
         </td>

@@ -24,12 +24,13 @@ import { ProgressLine } from '../../shared/progress-line';
 import { TaskRow } from '../../shared/task-row';
 import { PlanForm } from './plan-form';
 import { SendDialog } from './send-dialog';
+import { EmptyState } from '../../shared/for-apps/status';
 
 /** One space: its photos, its plan and checklist, decisions, shopping, Game Plan hand-off and check-ins. */
 @Component({
   selector: 'app-space-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
+  imports: [EmptyState, 
     FormsModule,
     MatButtonModule,
     MatDialogModule,

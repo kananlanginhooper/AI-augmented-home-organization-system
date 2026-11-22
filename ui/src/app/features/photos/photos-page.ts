@@ -7,11 +7,12 @@ import { MatSelectModule } from '@angular/material/select';
 import { Api, type Photo } from '../../core/api';
 import { PhotoDialog } from './photo-dialog';
 import { UploadZone } from './upload-zone';
+import { StatusPill, EmptyState } from '../../shared/for-apps/status';
 
 @Component({
   selector: 'app-photos-page',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, MatButtonToggleModule, MatDialogModule, MatFormFieldModule, MatSelectModule, UploadZone],
+  imports: [StatusPill, EmptyState, FormsModule, MatButtonToggleModule, MatDialogModule, MatFormFieldModule, MatSelectModule, UploadZone],
   template: `
     <app-upload-zone [spaces]="spaces.value() ?? []" (uploaded)="reload()" />
 
@@ -34,17 +35,17 @@ import { UploadZone } from './upload-zone';
         <button class="tile" (click)="open(p)" [attr.aria-label]="'Open photo ' + (p.original_name || p.id)">
           <img [src]="api.photoUrl(p)" alt="" loading="lazy" />
           <span class="tags">
-            <span class="app-pill">{{ p.phase }}</span>
+            <app-pill>{{ p.phase }}</app-pill>
             @if (p.analysis) {
-              <span class="app-pill" data-tone="ok">{{ itemCount(p) }} items</span>
+              <app-pill tone="ok">{{ itemCount(p) }} items</app-pill>
             } @else {
-              <span class="app-pill" data-tone="warn">waiting</span>
+              <app-pill tone="warn">waiting</app-pill>
             }
           </span>
           <span class="where">{{ spaceName(p.space_id) || 'not assigned' }}</span>
         </button>
       } @empty {
-        <div class="app-empty">No photos here yet.</div>
+        <app-empty-state message="No photos here yet." />
       }
     </div>
   `,
