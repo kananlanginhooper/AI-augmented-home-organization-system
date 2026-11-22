@@ -139,7 +139,7 @@ export class Api {
     return this.send<SendResult>('POST', 'gameplan/send', body);
   }
   syncGamePlan() {
-    return this.send<{ marked_done: number }>('POST', 'gameplan/sync');
+    return this.send<{ marked_done: number; marked_skipped: number }>('POST', 'gameplan/sync');
   }
 
   jobs(status?: string) {

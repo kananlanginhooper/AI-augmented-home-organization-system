@@ -134,8 +134,9 @@ def test_full_loop(monkeypatch):
         assert ov["progress"]["tasks_done"] == 1 and ov["progress"]["minutes_done"] == 30
 
         # Game Plan hand-off, against a fake Game Plan.
-        # Game Plan splits the step: part 1 keeps gp-1, part 2 is gp-2 with splitFrom gp-1.
+        # Game Plan splits the step: part 1 keeps gp-1, part 2 (gp-2) comes from gp-1, and part 3 (gp-3) from gp-2.
         part2_done = {"value": False}
+        part3_status = {"value": "todo"}
 
         def fake(request: httpx.Request) -> httpx.Response:
             if request.method == "POST":
@@ -145,6 +146,7 @@ def test_full_loop(monkeypatch):
                 json=[
                     {"id": "gp-1", "date": "2026-11-23", "done": True, "splitFrom": None},
                     {"id": "gp-2", "date": "2026-11-24", "done": part2_done["value"], "splitFrom": "gp-1"},
+                    {"id": "gp-3", "date": "2026-11-25", "done": False, "status": part3_status["value"], "splitFrom": "gp-2"},
                 ],
             )
 
@@ -153,9 +155,11 @@ def test_full_loop(monkeypatch):
         )
         sent = c.post("/api/gameplan/send", json={"task_ids": [second["id"]], "date": "2026-11-23"}).json()
         assert sent["errors"] == [] and sent["sent"][0]["gameplan_task_id"] == "gp-1"
-        assert c.post("/api/gameplan/sync").json() == {"marked_done": 0}  # part 2 still open
+        assert c.post("/api/gameplan/sync").json() == {"marked_done": 0, "marked_skipped": 0}  # parts 2 and 3 open
         part2_done["value"] = True
-        assert c.post("/api/gameplan/sync").json() == {"marked_done": 1}
+        assert c.post("/api/gameplan/sync").json() == {"marked_done": 0, "marked_skipped": 0}  # part 3 (chained) open
+        part3_status["value"] = "skipped"  # skipped counts as finished; parts 1-2 are done, so the step is done
+        assert c.post("/api/gameplan/sync").json() == {"marked_done": 1, "marked_skipped": 0}
 
         # Progress photo + review.
         c.post(

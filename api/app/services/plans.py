@@ -142,11 +142,11 @@ def send_to_gameplan(db: Session, body: SendToGamePlanIn) -> SendResult:
     return SendResult(sent=[TaskOut.model_validate(t) for t in sent], errors=errors)
 
 
-def sync_from_gameplan(db: Session) -> int:
-    """Mark steps done that were finished in Game Plan. Returns how many changed."""
-    linked = list(db.scalars(select(Task).where(Task.gameplan_task_id.is_not(None), Task.status != "done")))
+def sync_from_gameplan(db: Session) -> dict[str, int]:
+    """Mark steps finished in Game Plan as done (or skipped). Returns how many changed each way."""
+    linked = list(db.scalars(select(Task).where(Task.gameplan_task_id.is_not(None), Task.status.not_in(["done", "skipped"]))))
     if not linked:
-        return 0
+        return {"marked_done": 0, "marked_skipped": 0}
     # Tasks can be moved earlier in Game Plan, so look back a while before the earliest date we sent.
     earliest = (
         min(date.fromisoformat(t.gameplan_date) for t in linked if t.gameplan_date)
@@ -157,8 +157,10 @@ def sync_from_gameplan(db: Session) -> int:
         r = client.get("/api/tasks", params={"start": (earliest - timedelta(days=60)).isoformat()})
         r.raise_for_status()
         remote = {str(t["id"]): t for t in r.json()}
-    # Splitting in Game Plan keeps the original as part 1 and adds parts whose splitFrom points back (parts can be
-    # split again), so a step is done when the original and every descendant part are done.
+    # Splitting in Game Plan keeps the original as part 1 and adds parts whose splitFrom points at the part they came
+    # from (part 3 -> part 2 -> original), so a step is finished when the original and every descendant part are.
+    # Skipping sets status "skipped" and leaves done false: a skipped part counts as finished, and a step whose parts
+    # were all skipped is skipped here too.
     children: dict[str, list[str]] = {}
     for t in remote.values():
         if t.get("splitFrom"):
@@ -173,15 +175,19 @@ def sync_from_gameplan(db: Session) -> int:
             todo.extend(children.get(tid, []))
         return out
 
-    changed = 0
+    counts = {"marked_done": 0, "marked_skipped": 0}
     for task in linked:
         gid = task.gameplan_task_id or ""
         other = remote.get(gid)
         pieces = family(gid)
-        if pieces and all(p.get("done") for p in pieces):
-            task.status, task.done_at = "done", now()
-            changed += 1
+        if pieces and all(p.get("done") or p.get("status") == "skipped" for p in pieces):
+            if any(p.get("done") for p in pieces):
+                task.status, task.done_at = "done", now()
+                counts["marked_done"] += 1
+            else:
+                task.status = "skipped"
+                counts["marked_skipped"] += 1
         elif other and other.get("date") and other["date"] != task.gameplan_date:
             task.gameplan_date = other["date"]  # moved in Game Plan
     db.commit()
-    return changed
+    return counts

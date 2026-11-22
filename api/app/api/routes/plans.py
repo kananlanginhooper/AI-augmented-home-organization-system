@@ -43,4 +43,4 @@ def send_to_gameplan(body: SendToGamePlanIn, db: DbSession):
 
 @router.post("/gameplan/sync")
 def sync_from_gameplan(db: DbSession) -> dict[str, int]:
-    return {"marked_done": service.sync_from_gameplan(db)}
+    return service.sync_from_gameplan(db)
