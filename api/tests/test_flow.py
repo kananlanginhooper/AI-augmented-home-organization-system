@@ -134,16 +134,27 @@ def test_full_loop(monkeypatch):
         assert ov["progress"]["tasks_done"] == 1 and ov["progress"]["minutes_done"] == 30
 
         # Game Plan hand-off, against a fake Game Plan.
+        # Game Plan splits the step: part 1 keeps gp-1, part 2 is gp-2 with splitFrom gp-1.
+        part2_done = {"value": False}
+
         def fake(request: httpx.Request) -> httpx.Response:
             if request.method == "POST":
                 return httpx.Response(201, json={"id": "gp-1", "date": "2026-11-23", "done": False})
-            return httpx.Response(200, json=[{"id": "gp-1", "date": "2026-11-23", "done": True}])
+            return httpx.Response(
+                200,
+                json=[
+                    {"id": "gp-1", "date": "2026-11-23", "done": True, "splitFrom": None},
+                    {"id": "gp-2", "date": "2026-11-24", "done": part2_done["value"], "splitFrom": "gp-1"},
+                ],
+            )
 
         monkeypatch.setattr(
             plan_service, "_gameplan", lambda: httpx.Client(base_url="http://gameplan.test", transport=httpx.MockTransport(fake))
         )
         sent = c.post("/api/gameplan/send", json={"task_ids": [second["id"]], "date": "2026-11-23"}).json()
         assert sent["errors"] == [] and sent["sent"][0]["gameplan_task_id"] == "gp-1"
+        assert c.post("/api/gameplan/sync").json() == {"marked_done": 0}  # part 2 still open
+        part2_done["value"] = True
         assert c.post("/api/gameplan/sync").json() == {"marked_done": 1}
 
         # Progress photo + review.

@@ -147,15 +147,38 @@ def sync_from_gameplan(db: Session) -> int:
     linked = list(db.scalars(select(Task).where(Task.gameplan_task_id.is_not(None), Task.status != "done")))
     if not linked:
         return 0
-    start = min(t.gameplan_date or "1970-01-01" for t in linked)
+    # Tasks can be moved earlier in Game Plan, so look back a while before the earliest date we sent.
+    earliest = (
+        min(date.fromisoformat(t.gameplan_date) for t in linked if t.gameplan_date)
+        if any(t.gameplan_date for t in linked)
+        else date.today()
+    )
     with _gameplan() as client:
-        r = client.get("/api/tasks", params={"start": start})
+        r = client.get("/api/tasks", params={"start": (earliest - timedelta(days=60)).isoformat()})
         r.raise_for_status()
         remote = {str(t["id"]): t for t in r.json()}
+    # Splitting in Game Plan keeps the original as part 1 and adds parts whose splitFrom points back (parts can be
+    # split again), so a step is done when the original and every descendant part are done.
+    children: dict[str, list[str]] = {}
+    for t in remote.values():
+        if t.get("splitFrom"):
+            children.setdefault(str(t["splitFrom"]), []).append(str(t["id"]))
+
+    def family(gid: str) -> list[dict]:
+        out, todo = [], [gid]
+        while todo:
+            tid = todo.pop()
+            if tid in remote:
+                out.append(remote[tid])
+            todo.extend(children.get(tid, []))
+        return out
+
     changed = 0
     for task in linked:
-        other = remote.get(task.gameplan_task_id or "")
-        if other and other.get("done"):
+        gid = task.gameplan_task_id or ""
+        other = remote.get(gid)
+        pieces = family(gid)
+        if pieces and all(p.get("done") for p in pieces):
             task.status, task.done_at = "done", now()
             changed += 1
         elif other and other.get("date") and other["date"] != task.gameplan_date:
