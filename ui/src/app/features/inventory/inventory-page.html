@@ -1,0 +1,110 @@
+<div class="filters">
+  <mat-form-field subscriptSizing="dynamic" class="grow">
+    <mat-label>Find an item</mat-label>
+    <mat-icon matPrefix>search</mat-icon>
+    <input matInput [ngModel]="q()" (ngModelChange)="q.set($event)" placeholder="drill, extension cord, winter coats…" />
+  </mat-form-field>
+  <mat-form-field subscriptSizing="dynamic">
+    <mat-label>Space</mat-label>
+    <mat-select [ngModel]="spaceId()" (ngModelChange)="spaceId.set($event)">
+      <mat-option [value]="null">Everywhere</mat-option>
+      @for (s of spaces.value() ?? []; track s.id) {
+        <mat-option [value]="s.id">{{ s.path }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field subscriptSizing="dynamic">
+    <mat-label>Decision</mat-label>
+    <mat-select [ngModel]="disposition()" (ngModelChange)="disposition.set($event)">
+      <mat-option value="">Any</mat-option>
+      @for (d of dispositions; track d) {
+        <mat-option [value]="d">{{ d }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <mat-slide-toggle [ngModel]="unconfirmed()" (ngModelChange)="unconfirmed.set($event)">Only Claude's unreviewed suggestions</mat-slide-toggle>
+</div>
+
+<table mat-table [dataSource]="items.value() ?? []" class="items">
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>Item</th>
+    <td mat-cell *matCellDef="let i">
+      <b>{{ i.name }}</b>
+      @if (i.quantity > 1) {
+        ×{{ i.quantity }}
+      }
+      @if (i.category) {
+        <div class="sub">{{ i.category }}</div>
+      }
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="where">
+    <th mat-header-cell *matHeaderCellDef>Where</th>
+    <td mat-cell *matCellDef="let i">
+      <mat-select class="inline" [ngModel]="i.space_id" (ngModelChange)="move(i, $event)" [attr.aria-label]="'Space for ' + i.name">
+        <mat-option [value]="null">unplaced</mat-option>
+        @for (s of spaces.value() ?? []; track s.id) {
+          <mat-option [value]="s.id">{{ s.path }}</mat-option>
+        }
+      </mat-select>
+      @if (i.spot) {
+        <div class="sub">{{ i.spot }}</div>
+      }
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="condition">
+    <th mat-header-cell *matHeaderCellDef>Condition / why</th>
+    <td mat-cell *matCellDef="let i">
+      <div>{{ i.condition }}</div>
+      @if (i.note) {
+        <div class="sub">{{ i.note }}</div>
+      }
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="disposition">
+    <th mat-header-cell *matHeaderCellDef>Decision</th>
+    <td mat-cell *matCellDef="let i">
+      <mat-select class="inline" [ngModel]="i.disposition" (ngModelChange)="decide(i, $event)" [attr.aria-label]="'Decision for ' + i.name">
+        @for (d of dispositions; track d) {
+          <mat-option [value]="d">{{ d }}</mat-option>
+        }
+      </mat-select>
+      @if (!i.confirmed) {
+        <span class="app-pill" data-tone="warn">Claude suggests</span>
+      } @else {
+        <span class="app-pill" [attr.data-tone]="tone[i.disposition]">decided</span>
+      }
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let i" class="actions">
+      @if (!i.confirmed) {
+        <button mat-stroked-button (click)="confirm(i)">Agree</button>
+      }
+      <button mat-icon-button (click)="remove(i)" [attr.aria-label]="'Delete ' + i.name"><mat-icon>delete</mat-icon></button>
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="columns"></tr>
+  <tr mat-row *matRowDef="let row; columns: columns"></tr>
+  <tr class="mat-row" *matNoDataRow>
+    <td class="app-empty" [attr.colspan]="columns.length">No items match. Upload photos and Claude will list what it sees.</td>
+  </tr>
+</table>
+
+<form class="add" (ngSubmit)="add()">
+  <mat-form-field subscriptSizing="dynamic" class="grow">
+    <mat-label>Add an item by hand</mat-label>
+    <input matInput name="name" [(ngModel)]="newName" />
+  </mat-form-field>
+  <mat-form-field subscriptSizing="dynamic">
+    <mat-label>Space</mat-label>
+    <mat-select name="space" [(ngModel)]="newSpace">
+      <mat-option [value]="null">unplaced</mat-option>
+      @for (s of spaces.value() ?? []; track s.id) {
+        <mat-option [value]="s.id">{{ s.path }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+  <button mat-flat-button type="submit">Add</button>
+</form>

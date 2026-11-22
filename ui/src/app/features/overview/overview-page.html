@@ -1,0 +1,60 @@
+@if (data.error()) {
+  <div class="app-empty">Couldn't load the overview. Is the API running?</div>
+} @else if (data.value(); as o) {
+  <div class="app-tiles">
+    @for (t of tiles(); track t.label) {
+      <div class="app-tile">
+        <span class="label">{{ t.label }}</span>
+        <span class="value">{{ t.value }}</span>
+        <span class="hint">{{ t.hint }}</span>
+      </div>
+    }
+  </div>
+
+  <div class="cols">
+    <section>
+      <h2>Do next</h2>
+      @for (t of o.next_tasks; track t.id) {
+        <div class="where">{{ spaceName(t.space_id) }}</div>
+        <app-task-row [t]="t" (status)="setStatus(t, $event)" (remove)="remove(t)" />
+      } @empty {
+        <div class="app-empty">
+          Nothing ready to do. Upload photos of a space, then ask Claude for a plan on its page.
+          <div><a mat-stroked-button routerLink="/photos">Upload photos</a></div>
+        </div>
+      }
+    </section>
+
+    <section>
+      <h2>Spaces</h2>
+      @for (s of rooms(); track s.id) {
+        <a class="space" [routerLink]="['/spaces', s.id]">
+          <div class="name">{{ s.name }}</div>
+          @if (s.goal) {
+            <div class="goal">{{ s.goal }}</div>
+          }
+          <app-progress-line [p]="s.progress" />
+        </a>
+      } @empty {
+        <div class="app-empty">No spaces yet. <a routerLink="/spaces">Add one</a> or upload photos with a space name.</div>
+      }
+
+      @if (o.recent_checkins.length) {
+        <h2>Latest check-ins</h2>
+        @for (c of o.recent_checkins; track c.id) {
+          <div class="checkin">
+            <div class="meta">
+              {{ spaceName(c.space_id) }} · {{ ago(c.created_at) }}
+              @if (c.percent_done != null) {
+                · ~{{ c.percent_done }}%
+              }
+            </div>
+            <div class="text">{{ c.summary }}</div>
+          </div>
+        }
+      }
+    </section>
+  </div>
+} @else {
+  <div class="app-empty">Loading…</div>
+}

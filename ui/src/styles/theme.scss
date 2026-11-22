@@ -1,0 +1,296 @@
+// Shared theme for every home-server dashboard (2026-10-29). Copy this file as-is into each app's
+// src/styles/theme.scss and list it first under "styles" in angular.json. The only per-app setting is --app-accent,
+// set in the app's own styles.scss (see "accent" in :root below).
+//
+// - Angular Material 3, light and dark following the system (color-scheme: light dark; Material's tokens use
+//   light-dark(), so nothing needs a class or a toggle).
+// - Shared design tokens: spacing, radius, type scale, surfaces. Use them in component styles instead of raw numbers:
+//     padding: var(--app-space-3);  border-radius: var(--app-radius-m);  font: var(--app-text-sm);
+// - Material's own system tokens (--mat-sys-surface, --mat-sys-on-surface, --mat-sys-outline-variant, ...) are
+//   available too; the --app-* surface names below are short aliases for the common ones.
+// - Shared classes for the src/for-apps pieces: .app-tile(s), .app-pill, .app-empty, .app-stack-table (at the end).
+// - Pages with no Sass build load src/for-apps/theme.css instead: this file compiled by `npm run theme-css`. Rerun it
+//   after every change here and commit both.
+@use '@angular/material' as mat;
+
+html {
+  color-scheme: light dark;
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+      ),
+      typography: (
+        plain-family: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+        brand-family: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
+      ),
+      density: 0,
+    )
+  );
+
+  // the app accent drives Material's primary color (buttons, focus, active tabs, ...)
+  @include mat.theme-overrides(
+    (
+      primary: var(--app-accent),
+    )
+  );
+}
+
+:root {
+  // ---- accent: the one per-app token. Override it in the app's styles.scss, e.g.
+  //      :root { --app-accent: light-dark(#2f6f5e, #7cc4ae); }
+  --app-accent: light-dark(#2f6fdb, #5b93f0);
+
+  // ---- spacing (4 px grid)
+  --app-space-1: 4px;
+  --app-space-2: 8px;
+  --app-space-3: 12px;
+  --app-space-4: 16px;
+  --app-space-5: 24px;
+  --app-space-6: 32px;
+
+  // ---- radius
+  --app-radius-s: 6px;
+  --app-radius-m: 10px;
+  --app-radius-l: 16px;
+
+  // ---- type scale (font shorthands: weight size/line-height family)
+  --app-font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --app-font-mono: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  --app-text-xs: 400 11.5px/1.4 var(--app-font-family);
+  --app-text-sm: 400 13px/1.45 var(--app-font-family);
+  --app-text-md: 400 14px/1.5 var(--app-font-family);
+  --app-text-lg: 600 16px/1.4 var(--app-font-family);
+  --app-text-xl: 650 20px/1.3 var(--app-font-family);
+  --app-text-2xl: 700 28px/1.2 var(--app-font-family);
+
+  // ---- surfaces and text (aliases of Material system tokens)
+  --app-bg: var(--mat-sys-surface-container-lowest);
+  --app-card: var(--mat-sys-surface-container-low);
+  --app-ink: var(--mat-sys-on-surface);
+  --app-muted: var(--mat-sys-on-surface-variant);
+  --app-line: var(--mat-sys-outline-variant);
+
+  // ---- status colors (same in every app)
+  --app-ok: light-dark(#1f8a4c, #5fd08f);
+  --app-warn: light-dark(#b97a00, #e3a92b);
+  --app-bad: var(--mat-sys-error);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: var(--app-bg);
+  color: var(--app-ink);
+  font: var(--app-text-md);
+}
+
+code,
+pre,
+kbd {
+  font-family: var(--app-font-mono);
+}
+
+// Tab strips scroll with a finger instead of arrow buttons (paging arrows are clumsy on a phone, and the strip
+// doesn't drag). Opt in per strip with disablePagination; then it is a plain horizontal scroller:
+//   <nav mat-tab-nav-bar [tabPanel]="panel" [disablePagination]="true">
+// Keep the current tab in view after navigation with activeLink.scrollIntoView({ block: 'nearest', inline: 'nearest' }).
+.mat-mdc-tab-nav-bar:not(.mat-mdc-tab-header-pagination-controls-enabled)
+  .mat-mdc-tab-link-container {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+// ---- shared pieces (2026-11-17). Plain classes, so build-free pages (theme.css) get them too; the Angular
+// components in the wrapper repo's src/for-apps render these same classes.
+
+// Status pill: <span class="app-pill" data-tone="ok">running</span>. Tones: ok, warn, bad; none = neutral.
+.app-pill {
+  --pill: var(--app-muted);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--app-space-1);
+  max-width: 100%;
+  padding: 1px var(--app-space-2);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--pill) 16%, transparent);
+  color: var(--pill);
+  font: var(--app-text-xs);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  &::before {
+    content: '';
+    flex: none;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  &[data-tone='ok'] {
+    --pill: var(--app-ok);
+  }
+  &[data-tone='warn'] {
+    --pill: var(--app-warn);
+  }
+  &[data-tone='bad'] {
+    --pill: var(--app-bad);
+  }
+}
+
+// Stat tile: a label, a big value (+ unit), an optional hint line and an optional sparkline slot.
+//   <div class="app-tile" data-tone="warn"><span class="label">Queue</span>
+//     <span class="value">412<small>files</small></span><span class="hint">+30 in the last hour</span></div>
+// A row of tiles: <div class="app-tiles">…</div> (wraps; two per row on a phone).
+.app-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--app-space-3);
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.app-tile {
+  --tile: var(--app-ink);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding: var(--app-space-3) var(--app-space-4);
+  border: 1px solid var(--app-line);
+  border-radius: var(--app-radius-m);
+  background: var(--app-card);
+  .label {
+    color: var(--app-muted);
+    font: var(--app-text-sm);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .value {
+    color: var(--tile);
+    font: var(--app-text-2xl);
+    font-variant-numeric: tabular-nums;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    small {
+      margin-left: var(--app-space-1);
+      color: var(--app-muted);
+      font: var(--app-text-sm);
+    }
+  }
+  .hint {
+    color: var(--app-muted);
+    font: var(--app-text-xs);
+  }
+  // a sparkline: class="spark" on plain HTML, the spark attribute in <app-stat-tile>
+  .spark,
+  [spark] {
+    display: block;
+    height: 32px;
+    margin-top: var(--app-space-1);
+  }
+  &[data-tone='ok'] {
+    --tile: var(--app-ok);
+  }
+  &[data-tone='warn'] {
+    --tile: var(--app-warn);
+  }
+  &[data-tone='bad'] {
+    --tile: var(--app-bad);
+  }
+}
+
+// Empty state: a quiet centered message, an optional icon above it and an optional action below.
+.app-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--app-space-2);
+  padding: var(--app-space-5);
+  color: var(--app-muted);
+  font: var(--app-text-md);
+  text-align: center;
+  p {
+    margin: 0;
+  }
+  .icon {
+    font-family: 'Material Symbols Outlined';
+    font-size: 40px;
+    line-height: 1;
+    font-feature-settings: 'liga';
+    opacity: 0.7;
+  }
+}
+
+// Table that stacks into cards on a phone (≤600px): each row becomes a card, each cell a "label: value" line.
+// Add class="app-stack-table" to the table (mat-table or a plain <table>) and data-label="Column" to each cell; in
+// Angular the appStackTable directive (src/for-apps) does both from the header row. Header-less cells (actions) get
+// data-label="" and show their content without a label. On a phone the header row is hidden, so sort lives in a
+// select or menu above the table there.
+@media (max-width: 600px) {
+  table.app-stack-table {
+    display: block;
+    width: 100%;
+    background: none;
+    thead {
+      display: none;
+    }
+    tbody {
+      display: flex;
+      flex-direction: column;
+      gap: var(--app-space-2);
+    }
+    tr {
+      display: flex;
+      flex-direction: column;
+      height: auto;
+      padding: var(--app-space-2) var(--app-space-3);
+      border: 1px solid var(--app-line);
+      border-radius: var(--app-radius-m);
+      background: var(--app-card);
+    }
+    // :first/:last-of-type outrank mat-table's own first/last cell padding
+    td,
+    td:first-of-type,
+    td:last-of-type {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--app-space-3);
+      min-height: 0;
+      padding: var(--app-space-1) 0;
+      border: 0;
+      text-align: right;
+      overflow-wrap: anywhere;
+      &::before {
+        content: attr(data-label);
+        flex: none;
+        max-width: 45%;
+        color: var(--app-muted);
+        font: var(--app-text-sm);
+        text-align: left;
+      }
+      &[data-label='']::before {
+        display: none;
+      }
+      &[data-label=''] {
+        justify-content: flex-end;
+      }
+    }
+  }
+}

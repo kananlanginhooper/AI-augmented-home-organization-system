@@ -1,0 +1,152 @@
+@if (space(); as s) {
+  <div class="head">
+    <div>
+      <a routerLink="/spaces" class="back">Spaces</a> / {{ s.path }}
+      <h1>{{ s.name }}</h1>
+      @if (s.goal) {
+        <p class="goal">{{ s.goal }}</p>
+      }
+    </div>
+    @if (!api.demo) {
+      <button mat-button (click)="deleteSpace()">Delete space</button>
+    }
+  </div>
+  <app-progress-line [p]="s.progress" />
+
+  @if (children().length) {
+    <div class="children">
+      Inside:
+      @for (c of children(); track c.id) {
+        <a [routerLink]="['/spaces', c.id]">{{ c.name }}</a>
+      }
+    </div>
+  }
+
+  <section>
+    <h2>Photos <a mat-button routerLink="/photos">Add photos</a></h2>
+    <div class="strip">
+      @for (p of photos.value() ?? []; track p.id) {
+        <img [src]="api.photoUrl(p)" [alt]="p.phase + ' photo'" [title]="p.phase + ' · ' + ago(p.uploaded_at)" loading="lazy" />
+      } @empty {
+        <div class="app-empty">No photos yet. Take a few wide shots and some close-ups, then upload them here as "before".</div>
+      }
+    </div>
+  </section>
+
+  <section>
+    <h2>
+      Plan
+      @if ((plans.value() ?? []).length > 1) {
+        <mat-select class="pick" [ngModel]="planId()" (ngModelChange)="pickedPlan.set($event)" aria-label="Choose plan">
+          @for (p of plans.value() ?? []; track p.id) {
+            <mat-option [value]="p.id">{{ p.goal }} ({{ p.status }})</mat-option>
+          }
+        </mat-select>
+      }
+      @if (planId() && !showPlanForm() && !api.demo) {
+        <button mat-button (click)="showPlanForm.set(true)">New plan</button>
+      }
+    </h2>
+
+    @if (!planId() || showPlanForm()) {
+      @if (!api.demo) {
+        <app-plan-form [initialGoal]="s.goal ?? ''" [busy]="busy()" (create)="createPlan($event)" />
+      }
+    } @else if (plan.value(); as p) {
+      @if (writing()) {
+        <div class="app-empty">
+          Claude is writing the plan…
+          @if (!cfg()?.claude?.apiWorker) {
+            <div>No API key is set, so the job is waiting for a Claude Code thread (Claude jobs tab).</div>
+          }
+        </div>
+      } @else {
+        @if (p.summary) {
+          <p class="summary">{{ p.summary }}</p>
+        }
+
+        @if (p.decisions?.length) {
+          <h3>Decide first</h3>
+          <ul class="decisions">
+            @for (d of p.decisions; track $index) {
+              <li>
+                <b>{{ d.question }}</b>
+                @if (d.options.length) {
+                  <span class="meta">({{ d.options.join(' / ') }})</span>
+                }
+                <div class="meta">{{ d.why }}</div>
+              </li>
+            }
+          </ul>
+        }
+
+        <h3>
+          Checklist
+          @if (cfg()?.gameplan?.enabled && !api.demo) {
+            <span class="actions">
+              <button mat-stroked-button [disabled]="!unsent().length" (click)="sendToGamePlan()">Send to Game Plan</button>
+              <button mat-button (click)="syncGamePlan()">Sync done from Game Plan</button>
+            </span>
+          }
+        </h3>
+        @for (t of p.tasks; track t.id) {
+          <app-task-row [t]="t" [blocked]="blocked(t)" (status)="setStatus(t, $event)" (remove)="removeTask(t)" />
+        } @empty {
+          <div class="app-empty">No steps yet.</div>
+        }
+        @if (!api.demo) {
+          <form class="add" (ngSubmit)="addStep()">
+            <mat-form-field subscriptSizing="dynamic" class="grow">
+              <mat-label>Add a step</mat-label>
+              <input matInput name="step" [(ngModel)]="newStep" />
+            </mat-form-field>
+            <button mat-button type="submit">Add</button>
+          </form>
+        }
+
+        @if (p.shopping?.length) {
+          <h3>Shopping list</h3>
+          <ul>
+            @for (l of p.shopping; track $index) {
+              <li><b>{{ l.item }}</b> · {{ l.quantity }} <span class="meta">— {{ l.why }}</span></li>
+            }
+          </ul>
+        }
+
+        @if (!api.demo) {
+          <div class="plan-actions">
+            <button mat-button (click)="finishPlan('done')">Mark plan done</button>
+            <button mat-button (click)="finishPlan('archived')">Archive plan</button>
+          </div>
+        }
+      }
+    }
+  </section>
+
+  <section>
+    <h2>
+      Progress check-ins
+      @if (!api.demo) {
+        <button mat-stroked-button (click)="review()" [disabled]="reviewQueued()">
+          {{ reviewQueued() ? 'Review queued' : 'Ask Claude to review progress' }}
+        </button>
+      }
+    </h2>
+    <p class="meta">Upload "progress" or "after" photos first; Claude compares them with the earlier ones and the checklist.</p>
+    @for (c of checkins.value() ?? []; track c.id) {
+      <div class="checkin">
+        <div class="meta">
+          {{ ago(c.created_at) }} · {{ c.source }}
+          @if (c.percent_done != null) {
+            · ~{{ c.percent_done }}%
+          }
+        </div>
+        <div class="text">{{ c.summary }}</div>
+      </div>
+    }
+  </section>
+} @else if (spaces.isLoading()) {
+  <div class="app-empty">Loading…</div>
+} @else {
+  <div class="app-empty">That space doesn't exist. <a routerLink="/spaces">All spaces</a></div>
+}

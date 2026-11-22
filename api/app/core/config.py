@@ -38,7 +38,7 @@ class Settings(BaseSettings):
 
     gameplan_api_url: str = ""
     gameplan_api_token: str = ""
-    gameplan_area: str = "Home"
+    gameplan_area: str = "personal"
 
     @cached_property
     def sqlalchemy_url(self) -> str:

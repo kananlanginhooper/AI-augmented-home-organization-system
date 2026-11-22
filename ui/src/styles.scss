@@ -1,0 +1,29 @@
+// App styles on top of the shared theme (src/styles/theme.scss, loaded first).
+@import 'material-symbols/outlined.css';
+
+:root {
+  --app-accent: light-dark(#7a4fc2, #c2a3f5);
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--app-bg);
+  color: var(--app-ink);
+  font: var(--app-text-md);
+}
+a {
+  color: var(--app-accent);
+}
+
+// Phones (DASHBOARD-REQUIREMENTS 5a): 16 px form text so iOS never zooms, 44 px tap targets.
+@media (max-width: 600px) {
+  :root {
+    --mat-select-trigger-text-size: 16px;
+    --mat-form-field-container-text-size: 16px;
+    --mat-icon-button-state-layer-size: 44px;
+  }
+  mat-form-field {
+    flex: 1 1 100%;
+  }
+}

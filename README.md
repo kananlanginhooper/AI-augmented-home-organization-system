@@ -29,6 +29,30 @@ Jobs live in the `ai_jobs` table, and either worker can take them:
 - **Claude Code thread:** with no key, jobs wait. A Claude Code session lists them with `tools/thread_jobs.py`, looks
   at the photos itself, and posts the result in the same JSON shape. Both workers apply results with the same code.
 
+```bash
+python tools/thread_jobs.py list --status pending
+python tools/thread_jobs.py claim          # saves the photos, prints instructions, context and the answer schema
+python tools/thread_jobs.py submit 12 answer.json
+```
+
+A wrong-shaped answer is refused with the validation error, so nothing is half-applied.
+
+### Other tools
+
+Photos are also queued for any other tool that wants to look at them: image tagging, face clustering,
+sensitivity scanning, OCR, and so on.
+
+- `GET /api/photos/feed?missing_tool=<name>` lists photos that tool hasn't evaluated yet (also `since=`, `limit=`).
+- `GET /api/photos/{id}/file?size=full|claude|thumb` returns the image.
+- `PUT /api/photos/{id}/evaluations` with `{"tool": "<name>", "version": "...", "result": {...}}` stores the result.
+  There is one result per tool per photo, and a re-run replaces it. The dashboard shows them under the photo.
+
+### Game Plan
+
+`GAMEPLAN_API_URL` points at the Game Plan API. "Send to Game Plan" creates one Game Plan task per step, filling
+days in checklist order up to a minutes-per-day budget. The note carries the first step, the supplies and the
+step id. "Sync" marks steps done once they're done in Game Plan, and follows any date moves made there.
+
 ## Layout
 
 ```
@@ -45,4 +69,16 @@ cp .env.example .env   # fill in the DB_* keys, optionally ANTHROPIC_API_KEY and
 docker compose up -d --build
 ```
 
-UI dev server: `cd ui && npm start` (proxies `/api` to the container).
+UI dev server: `cd ui && npm start` (port 4370, proxies `/api` to the container).
+
+Tests and lint (in Docker, Python 3.12):
+
+```bash
+docker build -f api/Dockerfile --target test -t home-organization-test . && docker run --rm home-organization-test
+```
+
+After an API change: `python api/export_openapi.py > api/openapi.json` (in the test image), then
+`cd ui && npm run api-types` to regenerate the TypeScript types.
+
+Photos and the database are personal data. They live on the host (`PHOTO_HOST_DIR`) and in Postgres, never in this
+repo.

@@ -6,7 +6,7 @@ from sqlalchemy import func, select
 from app.api.deps import DbSession
 from app.core.config import settings
 from app.db.models import AiJob, Checkin, Item
-from app.schemas.core import CheckinOut, Overview, RuntimeConfig, TaskOut
+from app.schemas.core import CheckinOut, ClaudeInfo, GamePlanInfo, Overview, RuntimeConfig, TaskOut
 from app.services import plans, spaces
 
 router = APIRouter(tags=["system"])
@@ -25,8 +25,8 @@ def config() -> RuntimeConfig:
         publicUrl=settings.public_url,
         frameParents=settings.frame_ancestor_list,
         login={"enabled": settings.login == "on", "issuer": settings.oidc_issuer, "clientId": settings.oidc_client_id},
-        claude={"apiWorker": settings.api_worker_enabled, "model": settings.claude_model},
-        gameplan={"enabled": bool(settings.gameplan_api_url), "area": settings.gameplan_area},
+        claude=ClaudeInfo(apiWorker=settings.api_worker_enabled, model=settings.claude_model),
+        gameplan=GamePlanInfo(enabled=bool(settings.gameplan_api_url), area=settings.gameplan_area),
     )
 
 

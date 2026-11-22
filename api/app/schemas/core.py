@@ -7,6 +7,8 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from app.schemas.ai import Decision, ShoppingLine
+
 
 class Out(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -177,8 +179,8 @@ class PlanOut(Out):
     session_minutes: int
     constraints: str | None
     summary: str | None
-    decisions: list[dict[str, Any]] | None
-    shopping: list[dict[str, Any]] | None
+    decisions: list[Decision] | None
+    shopping: list[ShoppingLine] | None
     status: str
     created_at: datetime
 
@@ -270,14 +272,24 @@ class JobResultIn(BaseModel):
 
 
 # --- system ---
+class ClaudeInfo(BaseModel):
+    apiWorker: bool  # noqa: N815  (camelCase like the rest of /api/config)
+    model: str
+
+
+class GamePlanInfo(BaseModel):
+    enabled: bool
+    area: str
+
+
 class RuntimeConfig(BaseModel):
     apiBase: str
     basePath: str
     publicUrl: str
     frameParents: list[str]
     login: dict[str, Any]
-    claude: dict[str, Any]
-    gameplan: dict[str, Any]
+    claude: ClaudeInfo
+    gameplan: GamePlanInfo
 
 
 class Overview(BaseModel):

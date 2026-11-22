@@ -28,7 +28,8 @@ def find_or_create(db: Session, name: str, kind: str = "room", parent_id: int | 
     parent = parent_id
     space = None
     for i, part in enumerate(p.strip() for p in name.split("/") if p.strip()):
-        space = db.scalar(select(Space).where(func.lower(Space.name) == part.lower(), Space.parent_id.is_(parent)))
+        same_parent = Space.parent_id.is_(None) if parent is None else Space.parent_id == parent
+        space = db.scalar(select(Space).where(func.lower(Space.name) == part.lower(), same_parent))
         if space is None:
             space = Space(name=part, kind=kind if i == 0 else "zone", parent_id=parent)
             db.add(space)

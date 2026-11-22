@@ -1,0 +1,3700 @@
+{
+ "openapi": "3.1.0",
+ "info": {
+  "title": "AI-augmented home organization",
+  "version": "0.1.0"
+ },
+ "paths": {
+  "/api/health": {
+   "get": {
+    "tags": [
+     "system"
+    ],
+    "summary": "Health",
+    "operationId": "health_api_health_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": {
+          "type": "string"
+         },
+         "type": "object",
+         "title": "Response Health Api Health Get"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/config": {
+   "get": {
+    "tags": [
+     "system"
+    ],
+    "summary": "Config",
+    "operationId": "config_api_config_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/RuntimeConfig"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/overview": {
+   "get": {
+    "tags": [
+     "system"
+    ],
+    "summary": "Overview",
+    "operationId": "overview_api_overview_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Overview"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/spaces": {
+   "get": {
+    "tags": [
+     "spaces"
+    ],
+    "summary": "List Spaces",
+    "operationId": "list_spaces_api_spaces_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/SpaceSummary"
+         },
+         "type": "array",
+         "title": "Response List Spaces Api Spaces Get"
+        }
+       }
+      }
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "spaces"
+    ],
+    "summary": "Create Space",
+    "operationId": "create_space_api_spaces_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SpaceIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/SpaceOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/spaces/{space_id}": {
+   "patch": {
+    "tags": [
+     "spaces"
+    ],
+    "summary": "Patch Space",
+    "operationId": "patch_space_api_spaces__space_id__patch",
+    "parameters": [
+     {
+      "name": "space_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Space Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SpacePatch"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/SpaceOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "delete": {
+    "tags": [
+     "spaces"
+    ],
+    "summary": "Delete Space",
+    "operationId": "delete_space_api_spaces__space_id__delete",
+    "parameters": [
+     {
+      "name": "space_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Space Id"
+      }
+     }
+    ],
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/spaces/{space_id}/plans": {
+   "get": {
+    "tags": [
+     "spaces"
+    ],
+    "summary": "List Plans",
+    "operationId": "list_plans_api_spaces__space_id__plans_get",
+    "parameters": [
+     {
+      "name": "space_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Space Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/PlanOut"
+         },
+         "title": "Response List Plans Api Spaces  Space Id  Plans Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "spaces"
+    ],
+    "summary": "Create Plan",
+    "description": "Starts a make_plan job; GET /api/plans/{id} shows the checklist once it's written.",
+    "operationId": "create_plan_api_spaces__space_id__plans_post",
+    "parameters": [
+     {
+      "name": "space_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Space Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/PlanIn"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PlanOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/spaces/{space_id}/review": {
+   "post": {
+    "tags": [
+     "spaces"
+    ],
+    "summary": "Review",
+    "description": "Ask Claude for a progress check-in from the before and latest photos.",
+    "operationId": "review_api_spaces__space_id__review_post",
+    "parameters": [
+     {
+      "name": "space_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Space Id"
+      }
+     }
+    ],
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/JobOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/spaces/{space_id}/checkins": {
+   "get": {
+    "tags": [
+     "spaces"
+    ],
+    "summary": "List Checkins",
+    "operationId": "list_checkins_api_spaces__space_id__checkins_get",
+    "parameters": [
+     {
+      "name": "space_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Space Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/CheckinOut"
+         },
+         "title": "Response List Checkins Api Spaces  Space Id  Checkins Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "spaces"
+    ],
+    "summary": "Add Checkin",
+    "operationId": "add_checkin_api_spaces__space_id__checkins_post",
+    "parameters": [
+     {
+      "name": "space_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Space Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CheckinIn"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/CheckinOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/photos": {
+   "get": {
+    "tags": [
+     "photos"
+    ],
+    "summary": "List Photos",
+    "operationId": "list_photos_api_photos_get",
+    "parameters": [
+     {
+      "name": "space_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Space Id"
+      }
+     },
+     {
+      "name": "unassigned",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "boolean",
+       "default": false,
+       "title": "Unassigned"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/PhotoOut"
+         },
+         "title": "Response List Photos Api Photos Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "photos"
+    ],
+    "summary": "Upload",
+    "operationId": "upload_api_photos_post",
+    "requestBody": {
+     "required": true,
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_upload_api_photos_post"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/UploadResult"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/photos/feed": {
+   "get": {
+    "tags": [
+     "photos"
+    ],
+    "summary": "Feed",
+    "description": "For other tools: photos in upload order. missing_tool=<name> lists only photos that tool hasn't evaluated.",
+    "operationId": "feed_api_photos_feed_get",
+    "parameters": [
+     {
+      "name": "since",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "format": "date-time"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Since"
+      }
+     },
+     {
+      "name": "missing_tool",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Missing Tool"
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "default": 200,
+       "title": "Limit"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/PhotoForTools"
+         },
+         "title": "Response Feed Api Photos Feed Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/photos/{photo_id}": {
+   "get": {
+    "tags": [
+     "photos"
+    ],
+    "summary": "Get Photo",
+    "operationId": "get_photo_api_photos__photo_id__get",
+    "parameters": [
+     {
+      "name": "photo_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Photo Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PhotoOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "patch": {
+    "tags": [
+     "photos"
+    ],
+    "summary": "Patch Photo",
+    "operationId": "patch_photo_api_photos__photo_id__patch",
+    "parameters": [
+     {
+      "name": "photo_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Photo Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/PhotoPatch"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PhotoOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "delete": {
+    "tags": [
+     "photos"
+    ],
+    "summary": "Delete Photo",
+    "operationId": "delete_photo_api_photos__photo_id__delete",
+    "parameters": [
+     {
+      "name": "photo_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Photo Id"
+      }
+     }
+    ],
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/photos/{photo_id}/analyze": {
+   "post": {
+    "tags": [
+     "photos"
+    ],
+    "summary": "Analyze",
+    "operationId": "analyze_api_photos__photo_id__analyze_post",
+    "parameters": [
+     {
+      "name": "photo_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Photo Id"
+      }
+     }
+    ],
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/JobOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/photos/{photo_id}/evaluations": {
+   "get": {
+    "tags": [
+     "photos"
+    ],
+    "summary": "List Evaluations",
+    "operationId": "list_evaluations_api_photos__photo_id__evaluations_get",
+    "parameters": [
+     {
+      "name": "photo_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Photo Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/EvaluationOut"
+         },
+         "title": "Response List Evaluations Api Photos  Photo Id  Evaluations Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "put": {
+    "tags": [
+     "photos"
+    ],
+    "summary": "Save Evaluation",
+    "description": "Another tool's result for this photo; one per tool, a re-run replaces it.",
+    "operationId": "save_evaluation_api_photos__photo_id__evaluations_put",
+    "parameters": [
+     {
+      "name": "photo_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Photo Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/EvaluationIn"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/EvaluationOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/items": {
+   "get": {
+    "tags": [
+     "items"
+    ],
+    "summary": "List Items",
+    "operationId": "list_items_api_items_get",
+    "parameters": [
+     {
+      "name": "space_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Space Id"
+      }
+     },
+     {
+      "name": "q",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Q"
+      }
+     },
+     {
+      "name": "disposition",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Disposition"
+      }
+     },
+     {
+      "name": "unconfirmed",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "boolean",
+       "default": false,
+       "title": "Unconfirmed"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/ItemOut"
+         },
+         "title": "Response List Items Api Items Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "items"
+    ],
+    "summary": "Create Item",
+    "operationId": "create_item_api_items_post",
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ItemIn"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ItemOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/items/{item_id}": {
+   "patch": {
+    "tags": [
+     "items"
+    ],
+    "summary": "Patch Item",
+    "operationId": "patch_item_api_items__item_id__patch",
+    "parameters": [
+     {
+      "name": "item_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Item Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ItemPatch"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ItemOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "delete": {
+    "tags": [
+     "items"
+    ],
+    "summary": "Delete Item",
+    "operationId": "delete_item_api_items__item_id__delete",
+    "parameters": [
+     {
+      "name": "item_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Item Id"
+      }
+     }
+    ],
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/plans/{plan_id}": {
+   "get": {
+    "tags": [
+     "plans"
+    ],
+    "summary": "Get Plan",
+    "operationId": "get_plan_api_plans__plan_id__get",
+    "parameters": [
+     {
+      "name": "plan_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Plan Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PlanDetail"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/plans/{plan_id}/status": {
+   "post": {
+    "tags": [
+     "plans"
+    ],
+    "summary": "Set Status",
+    "operationId": "set_status_api_plans__plan_id__status_post",
+    "parameters": [
+     {
+      "name": "plan_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Plan Id"
+      }
+     },
+     {
+      "name": "status",
+      "in": "query",
+      "required": true,
+      "schema": {
+       "enum": [
+        "active",
+        "done",
+        "archived"
+       ],
+       "type": "string",
+       "title": "Status"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PlanOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/plans/{plan_id}/tasks": {
+   "post": {
+    "tags": [
+     "plans"
+    ],
+    "summary": "Add Task",
+    "operationId": "add_task_api_plans__plan_id__tasks_post",
+    "parameters": [
+     {
+      "name": "plan_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Plan Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/TaskIn"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/TaskOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/tasks/{task_id}": {
+   "patch": {
+    "tags": [
+     "plans"
+    ],
+    "summary": "Patch Task",
+    "operationId": "patch_task_api_tasks__task_id__patch",
+    "parameters": [
+     {
+      "name": "task_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Task Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/TaskPatch"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/TaskOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "delete": {
+    "tags": [
+     "plans"
+    ],
+    "summary": "Delete Task",
+    "operationId": "delete_task_api_tasks__task_id__delete",
+    "parameters": [
+     {
+      "name": "task_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Task Id"
+      }
+     }
+    ],
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/gameplan/send": {
+   "post": {
+    "tags": [
+     "plans"
+    ],
+    "summary": "Send To Gameplan",
+    "operationId": "send_to_gameplan_api_gameplan_send_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SendToGamePlanIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/SendResult"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/gameplan/sync": {
+   "post": {
+    "tags": [
+     "plans"
+    ],
+    "summary": "Sync From Gameplan",
+    "operationId": "sync_from_gameplan_api_gameplan_sync_post",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": {
+          "type": "integer"
+         },
+         "type": "object",
+         "title": "Response Sync From Gameplan Api Gameplan Sync Post"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/ai/jobs": {
+   "get": {
+    "tags": [
+     "ai"
+    ],
+    "summary": "List Jobs",
+    "operationId": "list_jobs_api_ai_jobs_get",
+    "parameters": [
+     {
+      "name": "status",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Status"
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "default": 100,
+       "title": "Limit"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/JobOut"
+         },
+         "title": "Response List Jobs Api Ai Jobs Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/ai/jobs/claim": {
+   "post": {
+    "tags": [
+     "ai"
+    ],
+    "summary": "Claim Next",
+    "description": "Take the oldest pending job for a thread and return what to look at.",
+    "operationId": "claim_next_api_ai_jobs_claim_post",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/JobContext"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/ai/jobs/{job_id}/context": {
+   "get": {
+    "tags": [
+     "ai"
+    ],
+    "summary": "Context",
+    "operationId": "context_api_ai_jobs__job_id__context_get",
+    "parameters": [
+     {
+      "name": "job_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Job Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/JobContext"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/ai/jobs/{job_id}/result": {
+   "post": {
+    "tags": [
+     "ai"
+    ],
+    "summary": "Submit",
+    "operationId": "submit_api_ai_jobs__job_id__result_post",
+    "parameters": [
+     {
+      "name": "job_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Job Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/JobResultIn"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/JobOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/ai/jobs/{job_id}/retry": {
+   "post": {
+    "tags": [
+     "ai"
+    ],
+    "summary": "Retry",
+    "operationId": "retry_api_ai_jobs__job_id__retry_post",
+    "parameters": [
+     {
+      "name": "job_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Job Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/JobOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ "components": {
+  "schemas": {
+   "Body_upload_api_photos_post": {
+    "properties": {
+     "file": {
+      "type": "string",
+      "contentMediaType": "application/octet-stream",
+      "title": "File"
+     },
+     "space_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Space Id"
+     },
+     "space": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Space"
+     },
+     "phase": {
+      "type": "string",
+      "enum": [
+       "before",
+       "progress",
+       "after",
+       "reference"
+      ],
+      "title": "Phase",
+      "default": "before"
+     },
+     "source": {
+      "type": "string",
+      "enum": [
+       "dashboard",
+       "thread",
+       "folder"
+      ],
+      "title": "Source",
+      "default": "dashboard"
+     },
+     "caption": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Caption"
+     },
+     "analyze": {
+      "type": "boolean",
+      "title": "Analyze",
+      "default": true
+     }
+    },
+    "type": "object",
+    "required": [
+     "file"
+    ],
+    "title": "Body_upload_api_photos_post"
+   },
+   "CheckinIn": {
+    "properties": {
+     "summary": {
+      "type": "string",
+      "title": "Summary"
+     },
+     "percent_done": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 100.0,
+        "minimum": 0.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Percent Done"
+     }
+    },
+    "type": "object",
+    "required": [
+     "summary"
+    ],
+    "title": "CheckinIn"
+   },
+   "CheckinOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "space_id": {
+      "type": "integer",
+      "title": "Space Id"
+     },
+     "plan_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Plan Id"
+     },
+     "summary": {
+      "type": "string",
+      "title": "Summary"
+     },
+     "percent_done": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Percent Done"
+     },
+     "source": {
+      "type": "string",
+      "title": "Source"
+     },
+     "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "space_id",
+     "plan_id",
+     "summary",
+     "percent_done",
+     "source",
+     "created_at"
+    ],
+    "title": "CheckinOut"
+   },
+   "ClaudeInfo": {
+    "properties": {
+     "apiWorker": {
+      "type": "boolean",
+      "title": "Apiworker"
+     },
+     "model": {
+      "type": "string",
+      "title": "Model"
+     }
+    },
+    "type": "object",
+    "required": [
+     "apiWorker",
+     "model"
+    ],
+    "title": "ClaudeInfo"
+   },
+   "Decision": {
+    "properties": {
+     "question": {
+      "type": "string",
+      "title": "Question"
+     },
+     "options": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Options"
+     },
+     "why": {
+      "type": "string",
+      "title": "Why"
+     }
+    },
+    "type": "object",
+    "required": [
+     "question",
+     "options",
+     "why"
+    ],
+    "title": "Decision"
+   },
+   "EvaluationIn": {
+    "properties": {
+     "tool": {
+      "type": "string",
+      "maxLength": 60,
+      "minLength": 1,
+      "title": "Tool"
+     },
+     "version": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Version"
+     },
+     "result": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Result"
+     }
+    },
+    "type": "object",
+    "required": [
+     "tool",
+     "result"
+    ],
+    "title": "EvaluationIn"
+   },
+   "EvaluationOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "photo_id": {
+      "type": "integer",
+      "title": "Photo Id"
+     },
+     "tool": {
+      "type": "string",
+      "title": "Tool"
+     },
+     "version": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Version"
+     },
+     "result": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Result"
+     },
+     "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "photo_id",
+     "tool",
+     "version",
+     "result",
+     "created_at"
+    ],
+    "title": "EvaluationOut"
+   },
+   "GamePlanInfo": {
+    "properties": {
+     "enabled": {
+      "type": "boolean",
+      "title": "Enabled"
+     },
+     "area": {
+      "type": "string",
+      "title": "Area"
+     }
+    },
+    "type": "object",
+    "required": [
+     "enabled",
+     "area"
+    ],
+    "title": "GamePlanInfo"
+   },
+   "HTTPValidationError": {
+    "properties": {
+     "detail": {
+      "items": {
+       "$ref": "#/components/schemas/ValidationError"
+      },
+      "type": "array",
+      "title": "Detail"
+     }
+    },
+    "type": "object",
+    "title": "HTTPValidationError"
+   },
+   "ItemIn": {
+    "properties": {
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "category": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Category"
+     },
+     "space_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Space Id"
+     },
+     "quantity": {
+      "type": "integer",
+      "minimum": 1.0,
+      "title": "Quantity",
+      "default": 1
+     },
+     "spot": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Spot"
+     },
+     "condition": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Condition"
+     },
+     "disposition": {
+      "type": "string",
+      "enum": [
+       "keep",
+       "donate",
+       "sell",
+       "trash",
+       "relocate",
+       "undecided"
+      ],
+      "title": "Disposition",
+      "default": "undecided"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     }
+    },
+    "type": "object",
+    "required": [
+     "name"
+    ],
+    "title": "ItemIn"
+   },
+   "ItemOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "category": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Category"
+     },
+     "space_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Space Id"
+     },
+     "photo_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Photo Id"
+     },
+     "quantity": {
+      "type": "integer",
+      "title": "Quantity"
+     },
+     "spot": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Spot"
+     },
+     "condition": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Condition"
+     },
+     "disposition": {
+      "type": "string",
+      "title": "Disposition"
+     },
+     "confirmed": {
+      "type": "boolean",
+      "title": "Confirmed"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     },
+     "source": {
+      "type": "string",
+      "title": "Source"
+     },
+     "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Updated At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "name",
+     "category",
+     "space_id",
+     "photo_id",
+     "quantity",
+     "spot",
+     "condition",
+     "disposition",
+     "confirmed",
+     "note",
+     "source",
+     "updated_at"
+    ],
+    "title": "ItemOut"
+   },
+   "ItemPatch": {
+    "properties": {
+     "name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Name"
+     },
+     "category": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Category"
+     },
+     "space_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Space Id"
+     },
+     "quantity": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Quantity"
+     },
+     "spot": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Spot"
+     },
+     "condition": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Condition"
+     },
+     "disposition": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "keep",
+         "donate",
+         "sell",
+         "trash",
+         "relocate",
+         "undecided"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Disposition"
+     },
+     "confirmed": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Confirmed"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     }
+    },
+    "type": "object",
+    "title": "ItemPatch"
+   },
+   "JobContext": {
+    "properties": {
+     "job": {
+      "$ref": "#/components/schemas/JobOut"
+     },
+     "instructions": {
+      "type": "string",
+      "title": "Instructions"
+     },
+     "context": {
+      "type": "string",
+      "title": "Context"
+     },
+     "photo_ids": {
+      "items": {
+       "type": "integer"
+      },
+      "type": "array",
+      "title": "Photo Ids"
+     },
+     "result_schema": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Result Schema"
+     }
+    },
+    "type": "object",
+    "required": [
+     "job",
+     "instructions",
+     "context",
+     "photo_ids",
+     "result_schema"
+    ],
+    "title": "JobContext",
+    "description": "Everything a Claude Code thread needs to do a job by hand."
+   },
+   "JobOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "kind": {
+      "type": "string",
+      "title": "Kind"
+     },
+     "target_id": {
+      "type": "integer",
+      "title": "Target Id"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "worker": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Worker"
+     },
+     "error": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Error"
+     },
+     "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created At"
+     },
+     "finished_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Finished At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "kind",
+     "target_id",
+     "status",
+     "worker",
+     "error",
+     "created_at",
+     "finished_at"
+    ],
+    "title": "JobOut"
+   },
+   "JobResultIn": {
+    "properties": {
+     "result": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Result"
+     }
+    },
+    "type": "object",
+    "required": [
+     "result"
+    ],
+    "title": "JobResultIn"
+   },
+   "Overview": {
+    "properties": {
+     "spaces": {
+      "items": {
+       "$ref": "#/components/schemas/SpaceSummary"
+      },
+      "type": "array",
+      "title": "Spaces"
+     },
+     "progress": {
+      "$ref": "#/components/schemas/Progress"
+     },
+     "next_tasks": {
+      "items": {
+       "$ref": "#/components/schemas/TaskOut"
+      },
+      "type": "array",
+      "title": "Next Tasks"
+     },
+     "open_decisions": {
+      "type": "integer",
+      "title": "Open Decisions"
+     },
+     "pending_jobs": {
+      "type": "integer",
+      "title": "Pending Jobs"
+     },
+     "recent_checkins": {
+      "items": {
+       "$ref": "#/components/schemas/CheckinOut"
+      },
+      "type": "array",
+      "title": "Recent Checkins"
+     }
+    },
+    "type": "object",
+    "required": [
+     "spaces",
+     "progress",
+     "next_tasks",
+     "open_decisions",
+     "pending_jobs",
+     "recent_checkins"
+    ],
+    "title": "Overview"
+   },
+   "PhotoForTools": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "space_path": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Space Path"
+     },
+     "phase": {
+      "type": "string",
+      "title": "Phase"
+     },
+     "uploaded_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Uploaded At"
+     },
+     "file_url": {
+      "type": "string",
+      "title": "File Url"
+     },
+     "sha256": {
+      "type": "string",
+      "title": "Sha256"
+     },
+     "analyzed": {
+      "type": "boolean",
+      "title": "Analyzed"
+     },
+     "tools_done": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Tools Done"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "space_path",
+     "phase",
+     "uploaded_at",
+     "file_url",
+     "sha256",
+     "analyzed",
+     "tools_done"
+    ],
+    "title": "PhotoForTools",
+    "description": "One row of the feed other tools read: what to evaluate, and what has been done already."
+   },
+   "PhotoOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "space_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Space Id"
+     },
+     "original_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Original Name"
+     },
+     "width": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Width"
+     },
+     "height": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Height"
+     },
+     "taken_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Taken At"
+     },
+     "phase": {
+      "type": "string",
+      "title": "Phase"
+     },
+     "source": {
+      "type": "string",
+      "title": "Source"
+     },
+     "caption": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Caption"
+     },
+     "analysis": {
+      "anyOf": [
+       {
+        "additionalProperties": true,
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Analysis"
+     },
+     "analyzed_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Analyzed At"
+     },
+     "uploaded_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Uploaded At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "space_id",
+     "original_name",
+     "width",
+     "height",
+     "taken_at",
+     "phase",
+     "source",
+     "caption",
+     "analysis",
+     "analyzed_at",
+     "uploaded_at"
+    ],
+    "title": "PhotoOut"
+   },
+   "PhotoPatch": {
+    "properties": {
+     "space_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Space Id"
+     },
+     "phase": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "before",
+         "progress",
+         "after",
+         "reference"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Phase"
+     },
+     "caption": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Caption"
+     }
+    },
+    "type": "object",
+    "title": "PhotoPatch"
+   },
+   "PlanDetail": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "space_id": {
+      "type": "integer",
+      "title": "Space Id"
+     },
+     "goal": {
+      "type": "string",
+      "title": "Goal"
+     },
+     "session_minutes": {
+      "type": "integer",
+      "title": "Session Minutes"
+     },
+     "constraints": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Constraints"
+     },
+     "summary": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Summary"
+     },
+     "decisions": {
+      "anyOf": [
+       {
+        "items": {
+         "$ref": "#/components/schemas/Decision"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Decisions"
+     },
+     "shopping": {
+      "anyOf": [
+       {
+        "items": {
+         "$ref": "#/components/schemas/ShoppingLine"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Shopping"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created At"
+     },
+     "tasks": {
+      "items": {
+       "$ref": "#/components/schemas/TaskOut"
+      },
+      "type": "array",
+      "title": "Tasks"
+     },
+     "job_status": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Job Status"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "space_id",
+     "goal",
+     "session_minutes",
+     "constraints",
+     "summary",
+     "decisions",
+     "shopping",
+     "status",
+     "created_at",
+     "tasks",
+     "job_status"
+    ],
+    "title": "PlanDetail"
+   },
+   "PlanIn": {
+    "properties": {
+     "goal": {
+      "type": "string",
+      "title": "Goal"
+     },
+     "session_minutes": {
+      "type": "integer",
+      "maximum": 240.0,
+      "minimum": 5.0,
+      "title": "Session Minutes",
+      "default": 30
+     },
+     "constraints": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Constraints"
+     }
+    },
+    "type": "object",
+    "required": [
+     "goal"
+    ],
+    "title": "PlanIn"
+   },
+   "PlanOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "space_id": {
+      "type": "integer",
+      "title": "Space Id"
+     },
+     "goal": {
+      "type": "string",
+      "title": "Goal"
+     },
+     "session_minutes": {
+      "type": "integer",
+      "title": "Session Minutes"
+     },
+     "constraints": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Constraints"
+     },
+     "summary": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Summary"
+     },
+     "decisions": {
+      "anyOf": [
+       {
+        "items": {
+         "$ref": "#/components/schemas/Decision"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Decisions"
+     },
+     "shopping": {
+      "anyOf": [
+       {
+        "items": {
+         "$ref": "#/components/schemas/ShoppingLine"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Shopping"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "space_id",
+     "goal",
+     "session_minutes",
+     "constraints",
+     "summary",
+     "decisions",
+     "shopping",
+     "status",
+     "created_at"
+    ],
+    "title": "PlanOut"
+   },
+   "Progress": {
+    "properties": {
+     "tasks_total": {
+      "type": "integer",
+      "title": "Tasks Total"
+     },
+     "tasks_done": {
+      "type": "integer",
+      "title": "Tasks Done"
+     },
+     "minutes_total": {
+      "type": "integer",
+      "title": "Minutes Total"
+     },
+     "minutes_done": {
+      "type": "integer",
+      "title": "Minutes Done"
+     },
+     "items_total": {
+      "type": "integer",
+      "title": "Items Total"
+     },
+     "items_decided": {
+      "type": "integer",
+      "title": "Items Decided"
+     },
+     "photos": {
+      "type": "integer",
+      "title": "Photos"
+     },
+     "latest_percent": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Latest Percent"
+     }
+    },
+    "type": "object",
+    "required": [
+     "tasks_total",
+     "tasks_done",
+     "minutes_total",
+     "minutes_done",
+     "items_total",
+     "items_decided",
+     "photos",
+     "latest_percent"
+    ],
+    "title": "Progress"
+   },
+   "RuntimeConfig": {
+    "properties": {
+     "apiBase": {
+      "type": "string",
+      "title": "Apibase"
+     },
+     "basePath": {
+      "type": "string",
+      "title": "Basepath"
+     },
+     "publicUrl": {
+      "type": "string",
+      "title": "Publicurl"
+     },
+     "frameParents": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Frameparents"
+     },
+     "login": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Login"
+     },
+     "claude": {
+      "$ref": "#/components/schemas/ClaudeInfo"
+     },
+     "gameplan": {
+      "$ref": "#/components/schemas/GamePlanInfo"
+     }
+    },
+    "type": "object",
+    "required": [
+     "apiBase",
+     "basePath",
+     "publicUrl",
+     "frameParents",
+     "login",
+     "claude",
+     "gameplan"
+    ],
+    "title": "RuntimeConfig"
+   },
+   "SendResult": {
+    "properties": {
+     "sent": {
+      "items": {
+       "$ref": "#/components/schemas/TaskOut"
+      },
+      "type": "array",
+      "title": "Sent"
+     },
+     "errors": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Errors"
+     }
+    },
+    "type": "object",
+    "required": [
+     "sent",
+     "errors"
+    ],
+    "title": "SendResult"
+   },
+   "SendToGamePlanIn": {
+    "properties": {
+     "task_ids": {
+      "items": {
+       "type": "integer"
+      },
+      "type": "array",
+      "title": "Task Ids"
+     },
+     "date": {
+      "type": "string",
+      "title": "Date"
+     },
+     "per_day_minutes": {
+      "type": "integer",
+      "minimum": 10.0,
+      "title": "Per Day Minutes",
+      "default": 60
+     }
+    },
+    "type": "object",
+    "required": [
+     "task_ids",
+     "date"
+    ],
+    "title": "SendToGamePlanIn"
+   },
+   "ShoppingLine": {
+    "properties": {
+     "item": {
+      "type": "string",
+      "title": "Item"
+     },
+     "quantity": {
+      "type": "string",
+      "title": "Quantity"
+     },
+     "why": {
+      "type": "string",
+      "title": "Why"
+     }
+    },
+    "type": "object",
+    "required": [
+     "item",
+     "quantity",
+     "why"
+    ],
+    "title": "ShoppingLine"
+   },
+   "SpaceIn": {
+    "properties": {
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "kind": {
+      "type": "string",
+      "enum": [
+       "room",
+       "zone",
+       "container"
+      ],
+      "title": "Kind",
+      "default": "room"
+     },
+     "parent_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Parent Id"
+     },
+     "goal": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Goal"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     }
+    },
+    "type": "object",
+    "required": [
+     "name"
+    ],
+    "title": "SpaceIn"
+   },
+   "SpaceOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "kind": {
+      "type": "string",
+      "title": "Kind"
+     },
+     "parent_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Parent Id"
+     },
+     "goal": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Goal"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "name",
+     "kind",
+     "parent_id",
+     "goal",
+     "note"
+    ],
+    "title": "SpaceOut"
+   },
+   "SpacePatch": {
+    "properties": {
+     "name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Name"
+     },
+     "kind": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "room",
+         "zone",
+         "container"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Kind"
+     },
+     "parent_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Parent Id"
+     },
+     "goal": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Goal"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     }
+    },
+    "type": "object",
+    "title": "SpacePatch"
+   },
+   "SpaceSummary": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "kind": {
+      "type": "string",
+      "title": "Kind"
+     },
+     "parent_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Parent Id"
+     },
+     "goal": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Goal"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     },
+     "path": {
+      "type": "string",
+      "title": "Path"
+     },
+     "progress": {
+      "$ref": "#/components/schemas/Progress"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "name",
+     "kind",
+     "parent_id",
+     "goal",
+     "note",
+     "path",
+     "progress"
+    ],
+    "title": "SpaceSummary"
+   },
+   "TaskIn": {
+    "properties": {
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "detail": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Detail"
+     },
+     "first_step": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "First Step"
+     },
+     "phase": {
+      "type": "string",
+      "title": "Phase",
+      "default": "sort"
+     },
+     "est_minutes": {
+      "type": "integer",
+      "minimum": 1.0,
+      "title": "Est Minutes",
+      "default": 20
+     },
+     "priority": {
+      "type": "integer",
+      "maximum": 3.0,
+      "minimum": 1.0,
+      "title": "Priority",
+      "default": 2
+     }
+    },
+    "type": "object",
+    "required": [
+     "title"
+    ],
+    "title": "TaskIn"
+   },
+   "TaskOut": {
+    "properties": {
+     "id": {
+      "type": "integer",
+      "title": "Id"
+     },
+     "plan_id": {
+      "type": "integer",
+      "title": "Plan Id"
+     },
+     "space_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Space Id"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "detail": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Detail"
+     },
+     "first_step": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "First Step"
+     },
+     "phase": {
+      "type": "string",
+      "title": "Phase"
+     },
+     "est_minutes": {
+      "type": "integer",
+      "title": "Est Minutes"
+     },
+     "priority": {
+      "type": "integer",
+      "title": "Priority"
+     },
+     "sort": {
+      "type": "integer",
+      "title": "Sort"
+     },
+     "depends_on": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "integer"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Depends On"
+     },
+     "supplies": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "string"
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Supplies"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "source": {
+      "type": "string",
+      "title": "Source"
+     },
+     "gameplan_task_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Gameplan Task Id"
+     },
+     "gameplan_date": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Gameplan Date"
+     },
+     "done_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Done At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "plan_id",
+     "space_id",
+     "title",
+     "detail",
+     "first_step",
+     "phase",
+     "est_minutes",
+     "priority",
+     "sort",
+     "depends_on",
+     "supplies",
+     "status",
+     "source",
+     "gameplan_task_id",
+     "gameplan_date",
+     "done_at"
+    ],
+    "title": "TaskOut"
+   },
+   "TaskPatch": {
+    "properties": {
+     "title": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Title"
+     },
+     "detail": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Detail"
+     },
+     "first_step": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "First Step"
+     },
+     "est_minutes": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Est Minutes"
+     },
+     "priority": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 3.0,
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Priority"
+     },
+     "sort": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Sort"
+     },
+     "status": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "todo",
+         "doing",
+         "done",
+         "skipped"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Status"
+     }
+    },
+    "type": "object",
+    "title": "TaskPatch"
+   },
+   "UploadResult": {
+    "properties": {
+     "photo": {
+      "$ref": "#/components/schemas/PhotoOut"
+     },
+     "duplicate": {
+      "type": "boolean",
+      "title": "Duplicate"
+     }
+    },
+    "type": "object",
+    "required": [
+     "photo",
+     "duplicate"
+    ],
+    "title": "UploadResult"
+   },
+   "ValidationError": {
+    "properties": {
+     "loc": {
+      "items": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "integer"
+        }
+       ]
+      },
+      "type": "array",
+      "title": "Location"
+     },
+     "msg": {
+      "type": "string",
+      "title": "Message"
+     },
+     "type": {
+      "type": "string",
+      "title": "Error Type"
+     },
+     "input": {
+      "title": "Input"
+     },
+     "ctx": {
+      "type": "object",
+      "title": "Context"
+     }
+    },
+    "type": "object",
+    "required": [
+     "loc",
+     "msg",
+     "type"
+    ],
+    "title": "ValidationError"
+   }
+  }
+ }
+}

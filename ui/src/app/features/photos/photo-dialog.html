@@ -1,0 +1,97 @@
+<h2 mat-dialog-title>{{ photo().original_name || 'Photo ' + photo().id }}</h2>
+<mat-dialog-content>
+  <div class="layout">
+    <a [href]="api.photoUrl(photo(), 'full')" target="_blank" rel="noopener">
+      <img [src]="api.photoUrl(photo(), 'claude')" alt="" />
+    </a>
+    <div class="side">
+      <div class="fields">
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>Space</mat-label>
+          <mat-select [ngModel]="photo().space_id" (ngModelChange)="save({ space_id: $event })">
+            <mat-option [value]="null">Not assigned</mat-option>
+            @for (s of data.spaces; track s.id) {
+              <mat-option [value]="s.id">{{ s.path }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>Phase</mat-label>
+          <mat-select [ngModel]="photo().phase" (ngModelChange)="save({ phase: $event })">
+            <mat-option value="before">Before</mat-option>
+            <mat-option value="progress">Progress</mat-option>
+            <mat-option value="after">After</mat-option>
+            <mat-option value="reference">Reference</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="meta">
+        Uploaded {{ ago(photo().uploaded_at) }} from {{ photo().source }}
+        @if (photo().taken_at) {
+          · taken {{ ago(photo().taken_at) }}
+        }
+        @if (photo().caption) {
+          <div>Note: {{ photo().caption }}</div>
+        }
+      </div>
+
+      @if (analysis; as a) {
+        <h3>Claude's reading</h3>
+        <p>{{ a.summary }}</p>
+        @if (a.space_guess && !photo().space_id) {
+          <p class="meta">Looks like: {{ a.space_guess }}</p>
+        }
+        @if (a.items.length) {
+          <h4>Items seen ({{ a.items.length }})</h4>
+          <ul>
+            @for (i of a.items; track $index) {
+              <li>
+                <b>{{ i.name }}</b> ×{{ i.quantity }} · {{ i.spot }}
+                <span class="app-pill" [attr.data-tone]="tone[i.suggested_disposition]">{{ i.suggested_disposition }}</span>
+                <div class="meta">{{ i.condition }} — {{ i.reason }}</div>
+              </li>
+            }
+          </ul>
+        }
+        @if (a.observations.length) {
+          <h4>Needs attention</h4>
+          <ul>
+            @for (o of a.observations; track $index) {
+              <li>
+                <span class="app-pill" [attr.data-tone]="o.severity === 'high' ? 'bad' : o.severity === 'medium' ? 'warn' : null">{{ o.severity }}</span>
+                {{ o.issue }} <span class="meta">→ {{ o.suggestion }}</span>
+              </li>
+            }
+          </ul>
+        }
+        @if (a.questions.length) {
+          <h4>Questions for you</h4>
+          <ul>
+            @for (q of a.questions; track $index) {
+              <li>{{ q }}</li>
+            }
+          </ul>
+        }
+      } @else {
+        <p class="meta">Claude hasn't looked at this photo yet. It's in the job queue.</p>
+      }
+
+      @if (evaluations.value()?.length) {
+        <h3>Other tools</h3>
+        @for (e of evaluations.value(); track e.id) {
+          <details>
+            <summary>{{ e.tool }} @if (e.version) { <span class="meta">{{ e.version }}</span> } <span class="meta">{{ ago(e.created_at) }}</span></summary>
+            <pre>{{ json(e.result) }}</pre>
+          </details>
+        }
+      }
+    </div>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions>
+  @if (!api.demo) {
+    <button mat-button (click)="remove()">Delete</button>
+    <button mat-button (click)="reanalyze()">Ask Claude again</button>
+  }
+  <button mat-flat-button (click)="close()">Close</button>
+</mat-dialog-actions>
