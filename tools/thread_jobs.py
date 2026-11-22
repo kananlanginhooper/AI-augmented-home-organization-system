@@ -9,7 +9,7 @@
 The session looks at the photos, writes the answer to a JSON file and runs `submit`. The API validates it against
 the same schema the API worker uses, so a bad answer is refused instead of half-applied.
 
-Standard library only. HOME_ORG_URL picks the API (default http://localhost:8109);
+Standard library only. HOME_ORG_URL picks the API (default http://127.0.0.1:8109; localhost stalls on Windows while IPv6 is tried first);
 photos are saved under HOME_ORG_JOB_DIR (default: the system temp folder).
 """
 
@@ -23,7 +23,7 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-BASE = os.environ.get("HOME_ORG_URL", "http://localhost:8109").rstrip("/")
+BASE = os.environ.get("HOME_ORG_URL", "http://127.0.0.1:8109").rstrip("/")
 JOB_DIR = Path(os.environ.get("HOME_ORG_JOB_DIR", Path(tempfile.gettempdir()) / "home-org-jobs"))
 
 

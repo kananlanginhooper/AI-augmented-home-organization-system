@@ -3,7 +3,7 @@
     python tools/upload_photos.py <file-or-folder>... [--space "Garage/Back wall"] [--phase before] [--caption ...]
                                   [--source folder] [--no-analyze] [--move-to <folder>]
 
-Standard library only. HOME_ORG_URL picks the API (default http://localhost:8109).
+Standard library only. HOME_ORG_URL picks the API (default http://127.0.0.1:8109; localhost stalls on Windows while IPv6 is tried first).
 --move-to moves each uploaded file out of an inbox folder so it isn't sent twice.
 """
 
@@ -62,7 +62,7 @@ def main() -> int:
     ap.add_argument("--move-to", help="move each uploaded file into this folder")
     args = ap.parse_args()
 
-    base = os.environ.get("HOME_ORG_URL", "http://localhost:8109").rstrip("/")
+    base = os.environ.get("HOME_ORG_URL", "http://127.0.0.1:8109").rstrip("/")
     fields = {"phase": args.phase, "source": args.source, "analyze": "false" if args.no_analyze else "true"}
     if args.space:
         fields["space"] = args.space
