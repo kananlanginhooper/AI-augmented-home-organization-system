@@ -1,0 +1,11 @@
+.env
+data/
+private/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+local.db
+ui/node_modules/
+ui/dist/
+ui/.angular/
